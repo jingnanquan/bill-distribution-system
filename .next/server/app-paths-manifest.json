@@ -1,1 +1,13 @@
-{}
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/admin/users/route": "app/api/admin/users/route.js",
+  "/api/manager/projects/route": "app/api/manager/projects/route.js",
+  "/api/member/assignments/route": "app/api/member/assignments/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/admin/page": "app/admin/page.js",
+  "/member/page": "app/member/page.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js",
+  "/manager/page": "app/manager/page.js"
+}

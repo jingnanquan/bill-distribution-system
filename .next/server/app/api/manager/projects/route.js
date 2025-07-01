@@ -1,11 +1,30 @@
-const CHUNK_PUBLIC_PATH = "server/app/api/manager/projects/route.js";
-const runtime = require("../../../../chunks/[turbopack]_runtime.js");
-runtime.loadChunk("server/chunks/node_modules_next_f7060eb8._.js");
-runtime.loadChunk("server/chunks/node_modules_next-auth_35ecac8a._.js");
-runtime.loadChunk("server/chunks/node_modules_openid-client_ef38b3be._.js");
-runtime.loadChunk("server/chunks/node_modules_jose_dist_node_cjs_b4a80197._.js");
-runtime.loadChunk("server/chunks/node_modules_b69eec1e._.js");
-runtime.loadChunk("server/chunks/[root-of-the-server]__e0195482._.js");
-runtime.getOrInstantiateRuntimeModule("[project]/.next-internal/server/app/api/manager/projects/route/actions.js [app-rsc] (server actions loader, ecmascript)", CHUNK_PUBLIC_PATH);
-runtime.getOrInstantiateRuntimeModule("[project]/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/app/api/manager/projects/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)", CHUNK_PUBLIC_PATH);
-module.exports = runtime.getOrInstantiateRuntimeModule("[project]/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/app/api/manager/projects/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)", CHUNK_PUBLIC_PATH).exports;
+(()=>{var e={};e.id=352,e.ids=[352],e.modules={3295:e=>{"use strict";e.exports=require("next/dist/server/app-render/after-task-async-storage.external.js")},10846:e=>{"use strict";e.exports=require("next/dist/compiled/next-server/app-page.runtime.prod.js")},11723:e=>{"use strict";e.exports=require("querystring")},12412:e=>{"use strict";e.exports=require("assert")},28354:e=>{"use strict";e.exports=require("util")},29294:e=>{"use strict";e.exports=require("next/dist/server/app-render/work-async-storage.external.js")},33015:(e,r,t)=>{"use strict";t.r(r),t.d(r,{patchFetch:()=>b,routeModule:()=>R,serverHooks:()=>A,workAsyncStorage:()=>x,workUnitAsyncStorage:()=>j});var s={};t.r(s),t.d(s,{GET:()=>E,PATCH:()=>N,POST:()=>g});var a=t(96559),n=t(48088),i=t(37719),u=t(32190),o=t(19854),p=t(15912),l=t(41098),d=t(77460);let c=process.env.NEXTAUTH_SECRET;async function m(e){let r=await (0,o.getServerSession)(l.N);if(r?.user?.role==="manager"&&r.user.id)return r.user.id;let t=await (0,p.getToken)({req:e,secret:c});if(t?.role==="manager"&&t?.sub)return Number(t.sub)}async function E(e){let r=await m(e);if(!r)return u.NextResponse.json({error:"无权限"},{status:403});let{searchParams:t}=new URL(e.url),s=t.get("language"),a=t.get("task"),n=t.get("keyword")??"";if(s&&a){let e=`
+      SELECT DISTINCT u.id, u.username, u.name
+        FROM member_users  u
+        JOIN member_skills s ON s.member_id = u.id
+       WHERE u.status   = 'active'
+         AND s.language = ?
+         AND s.task     = ?
+         ${n?"AND (u.username LIKE ? OR u.name LIKE ?)":""}
+       ORDER BY u.name
+    `,r=n?[s,a,`%${n}%`,`%${n}%`]:[s,a],t=d.A.prepare(e).all(...r);return u.NextResponse.json({members:t})}let i=d.A.prepare("SELECT * FROM projects WHERE manager_id = ? ORDER BY id DESC").all(r),o=d.A.prepare(`
+    SELECT a.*,
+           u.name AS member_name
+      FROM project_assignments a
+      JOIN member_users      u ON u.id = a.member_id
+     WHERE a.project_id = ?
+     ORDER BY
+       CASE a.role
+         WHEN '翻译' THEN 1
+         WHEN '质检' THEN 2
+         WHEN '后期' THEN 3
+         WHEN '审核' THEN 4
+         ELSE 5
+       END
+  `);for(let e of i)e.assignments=o.all(e.id),e.projectStatus=function(e,r){let t=e.every(e=>"pending"===e.status),s=e.some(e=>"rejected"===e.status),a=e.every(e=>"completed"===e.status),n=new Date,i=new Date(r);return t?"分配中":s?"请重新分配任务":a?"待验收":n>i?"超时未完成":"进行中"}(e.assignments,e.deadline);return u.NextResponse.json(i)}async function g(e){let r=await m(e);if(!r)return u.NextResponse.json({error:"无权限"},{status:403});let{title:t,episode:s,language:a,minutes:n,deadline:i,assignments:o}=await e.json();if(!t||!s||!a||!n||!i||!o)return u.NextResponse.json({error:"字段不完整"},{status:400});let p=d.A.prepare(`INSERT INTO projects
+       (title, episode, language, minutes, deadline, manager_id, accepted)
+     VALUES (?, ?, ?, ?, ?, ?, 0)`).run(t,s,a,n,i,r).lastInsertRowid,l=d.A.prepare(`INSERT INTO project_assignments
+       (project_id, member_id, role, minutes, status, deadline)
+     VALUES (?, ?, ?, ?, ?, ?)`);for(let[e,r]of Object.entries(o))l.run(p,Number(r),e,n,"pending",i);return u.NextResponse.json({ok:!0})}async function N(e){let r=await m(e);if(!r)return u.NextResponse.json({error:"无权限"},{status:403});let{projectId:t}=await e.json();return t?0===d.A.prepare(`UPDATE projects
+                 SET accepted = 1
+               WHERE id = ? AND manager_id = ?`).run(t,r).changes?u.NextResponse.json({error:"无此项目或无权限"},{status:400}):u.NextResponse.json({ok:!0}):u.NextResponse.json({error:"缺少 projectId"},{status:400})}let R=new a.AppRouteRouteModule({definition:{kind:n.RouteKind.APP_ROUTE,page:"/api/manager/projects/route",pathname:"/api/manager/projects",filename:"route",bundlePath:"app/api/manager/projects/route"},resolvedPagePath:"E:\\offer\\test\\bill-distribution-system\\app\\api\\manager\\projects\\route.ts",nextConfigOutput:"",userland:s}),{workAsyncStorage:x,workUnitAsyncStorage:j,serverHooks:A}=R;function b(){return(0,i.patchFetch)({workAsyncStorage:x,workUnitAsyncStorage:j})}},33873:e=>{"use strict";e.exports=require("path")},41098:(e,r,t)=>{"use strict";t.d(r,{N:()=>n});var s=t(13581),a=t(77460);let n={session:{strategy:"jwt"},secret:process.env.NEXTAUTH_SECRET??"devsecret",providers:[(0,s.A)({name:"Credentials",credentials:{username:{label:"用户名",type:"text"},password:{label:"密码",type:"password"}},async authorize(e){if(!e)return null;let{username:r,password:t}=e,s=a.A.prepare("SELECT * FROM admin_users WHERE username = ? AND password = ?").get(r,t);if(s)return{id:s.id,name:s.name,role:"admin"};let n=a.A.prepare("SELECT * FROM manager_users WHERE username = ? AND password = ?").get(r,t);if(n)return{id:n.id,name:n.name,role:"manager"};let i=a.A.prepare("SELECT * FROM member_users WHERE username = ? AND password = ?").get(r,t);return i?{id:i.id,name:i.name,role:"member"}:null}})],callbacks:{jwt:async({token:e,user:r})=>(r&&(e.role=r.role,e.name=r.name),e),session:async({session:e,token:r})=>(e.user&&(e.user.id=r.sub?Number(r.sub):void 0,e.user.role=r.role,e.user.name=r.name),e)},pages:{signIn:"/login"}}},44870:e=>{"use strict";e.exports=require("next/dist/compiled/next-server/app-route.runtime.prod.js")},55511:e=>{"use strict";e.exports=require("crypto")},55591:e=>{"use strict";e.exports=require("https")},63033:e=>{"use strict";e.exports=require("next/dist/server/app-render/work-unit-async-storage.external.js")},74075:e=>{"use strict";e.exports=require("zlib")},77460:(e,r,t)=>{"use strict";t.d(r,{A:()=>u});let s=require("better-sqlite3");var a=t.n(s),n=t(33873);let i=t.n(n)().join(process.cwd(),"data","bill_system.db"),u=new(a())(i)},78335:()=>{},79428:e=>{"use strict";e.exports=require("buffer")},79551:e=>{"use strict";e.exports=require("url")},81630:e=>{"use strict";e.exports=require("http")},94735:e=>{"use strict";e.exports=require("events")},96487:()=>{}};var r=require("../../../../webpack-runtime.js");r.C(e);var t=e=>r(r.s=e),s=r.X(0,[243,580,412],()=>t(33015));module.exports=s})();

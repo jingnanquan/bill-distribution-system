@@ -51,7 +51,7 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    if (session?.user?.role === 'admin') fetchData();
+    if ((session?.user as any)?.role === 'admin') fetchData();
   }, [session]);
 
   /* ---------- 工具函数 ---------- */
@@ -122,7 +122,7 @@ export default function AdminPage() {
 
   /* ---------- 页面渲染 ---------- */
   if (status === 'loading') return <div>加载中...</div>;
-  if (!session || session.user.role !== 'admin') return <div>无访问权限</div>;
+  if (!session || (session?.user as any)?.role !== 'admin') return <div>无访问权限</div>;
 
   const users = showType === 'manager' ? managers : members;
 

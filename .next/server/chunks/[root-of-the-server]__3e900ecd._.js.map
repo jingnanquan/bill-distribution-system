@@ -1,8 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 6, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
-    {"offset": {"line": 76, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Clementine/Desktop/bill-distribution-system/lib/db.ts"],"sourcesContent":["import Database from 'better-sqlite3';\r\nimport path from 'path';\r\n\r\nconst dbPath = path.join(process.cwd(), 'data', 'bill_system.db');\r\nconst db = new Database(dbPath);\r\n\r\nexport default db;\r\n"],"names":[],"mappings":";;;AAAA;AACA;;;AAEA,MAAM,SAAS,iGAAA,CAAA,UAAI,CAAC,IAAI,CAAC,QAAQ,GAAG,IAAI,QAAQ;AAChD,MAAM,KAAK,IAAI,2HAAA,CAAA,UAAQ,CAAC;uCAET","debugId":null}},
-    {"offset": {"line": 92, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Clementine/Desktop/bill-distribution-system/app/api/projects/route.ts"],"sourcesContent":["import { NextRequest, NextResponse } from 'next/server';\r\nimport db from '@/lib/db';\r\n\r\nexport async function GET(req: NextRequest) {\r\n  const stmt = db.prepare('SELECT * FROM projects');\r\n  const projects = stmt.all();\r\n  return NextResponse.json(projects);\r\n}\r\n"],"names":[],"mappings":";;;AAAA;AACA;;;AAEO,eAAe,IAAI,GAAgB;IACxC,MAAM,OAAO,2GAAA,CAAA,UAAE,CAAC,OAAO,CAAC;IACxB,MAAM,WAAW,KAAK,GAAG;IACzB,OAAO,gIAAA,CAAA,eAAY,CAAC,IAAI,CAAC;AAC3B","debugId":null}}]
-}
